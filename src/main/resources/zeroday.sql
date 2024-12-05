@@ -1,0 +1,58 @@
+CREATE TABLE IF NOT EXISTS "user" (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    email VARCHAR(255) UNIQUE NOT NULL,
+    password VARCHAR(255) NOT NULL,
+    firstname VARCHAR(64) NOT NULL,
+    lastname VARCHAR(64) NOT NULL,
+    username VARCHAR(255) NOT NULL,
+    birthday DATE NOT NULL,
+    gender VARCHAR(64) NOT NULL,
+    nationality VARCHAR(64) NOT NULL,
+    bio TEXT,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    enabled BOOLEAN NOT NULL,
+    role VARCHAR(64) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS validation (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    code CHARACTER(6) NOT NULL,
+    expired_at TIMESTAMP NOT NULL,
+    enabled BOOLEAN NOT NULL,
+    user_id BIGINT NOT NULL,
+    CONSTRAINT validation_user_fk FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS jwt (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    value VARCHAR(255) NOT NULL,
+    expired_at TIMESTAMP NOT NULL,
+    enabled BOOLEAN NOT NULL,
+    user_id BIGINT NOT NULL,
+    CONSTRAINT jwt_user_fk FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS post (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    content VARCHAR(3000) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    user_id BIGINT NOT NULL,
+    parent_id BIGINT,
+    CONSTRAINT post_user_fk FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE,
+    CONSTRAINT post_parent_fk FOREIGN KEY (parent_id) REFERENCES post(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS file (
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+    name VARCHAR(255) UNIQUE NOT NULL,
+    extension VARCHAR(10) NOT NULL,
+    size_in_bytes BIGINT NOT NULL,
+    uploaded_at TIMESTAMP NOT NULL,
+    processed BOOLEAN NOT NULL,
+    user_id BIGINT,
+    post_id BIGINT,
+    CONSTRAINT file_user_fk FOREIGN KEY (user_id) REFERENCES "user"(id) ON DELETE CASCADE,
+    CONSTRAINT file_post_fk FOREIGN KEY (post_id) REFERENCES post(id) ON DELETE CASCADE
+);
