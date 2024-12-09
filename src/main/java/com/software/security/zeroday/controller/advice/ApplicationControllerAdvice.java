@@ -20,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
+import org.springframework.web.multipart.MultipartException;
 
 @Slf4j
 @RestControllerAdvice
@@ -32,10 +33,11 @@ public class ApplicationControllerAdvice {
         NotYetEnabledException.class,
         LockedException.class,
         BadPasswordException.class,
+        BadCredentialsException.class,
         PostNotFoundException.class,
         InvalidFileException.class,
         ConstraintException.class,
-        HttpMediaTypeNotSupportedException.class,
+        MultipartException.class
     })
     public @ResponseBody ErrorEntity handleBadRequestException(RuntimeException e) {
         log.warn(String.valueOf(e));
@@ -62,22 +64,22 @@ public class ApplicationControllerAdvice {
     }
 
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
-    @ExceptionHandler({BadCredentialsException.class})
-    public @ResponseBody ErrorEntity handleBadCredentialsException(BadCredentialsException e) {
-        log.warn(String.valueOf(e));
-        return ErrorEntity.builder()
-            .status(HttpStatus.BAD_REQUEST.value())
-            .message(e.getMessage())
-            .build();
-    }
-
-    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ExceptionHandler({HttpMessageNotReadableException.class})
     public @ResponseBody ErrorEntity handleHttpMessageNotReadableException(HttpMessageNotReadableException e) {
         log.warn(String.valueOf(e));
         return ErrorEntity.builder()
             .status(HttpStatus.BAD_REQUEST.value())
             .message("Invalid request format: " + e.getMessage())
+            .build();
+    }
+
+    @ResponseStatus(value = HttpStatus.UNSUPPORTED_MEDIA_TYPE)
+    @ExceptionHandler({HttpMediaTypeNotSupportedException.class})
+    public @ResponseBody ErrorEntity handleHttpMediaTypeNotSupportedException(HttpMediaTypeNotSupportedException e) {
+        log.warn(String.valueOf(e));
+        return ErrorEntity.builder()
+            .status(HttpStatus.UNSUPPORTED_MEDIA_TYPE.value())
+            .message(e.getMessage())
             .build();
     }
 
