@@ -33,6 +33,9 @@ build/
 .vscode/
 
 src/main/resources/static/images/*
+!src/main/resources/static/images/user.png
 src/main/resources/static/videos/*
+!src/main/resources/static/videos
 src/main/resources/static/temp/*
+!src/main/resources/static/temp
 
