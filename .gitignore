@@ -32,6 +32,7 @@ build/
 ### VS Code ###
 .vscode/
 
-/ressources/static/images/
-/ressources/static/videos/
-/ressources/static/temp/
+src/main/resources/static/images/
+src/main/resources/static/videos/
+src/main/resources/static/temp/
+
