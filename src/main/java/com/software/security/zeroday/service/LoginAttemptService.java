@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
@@ -107,5 +108,14 @@ public class LoginAttemptService {
         while (this.loginAttemptRepository.existsByDeviceId(uniqueDeviceId));
 
         return uniqueDeviceId;
+    }
+
+    @Scheduled(cron = "@daily")
+    public void removeUselessLoginAttempts() {
+        Instant now = Instant.now();
+        log.info("Deletion of useless login attempts at: {}", now);
+        this.loginAttemptRepository.deleteAllByLastAttemptAtBefore(
+            now.minus(this.BLOCK_DURATION, this.CHRONO_UNIT) // 15 minutes after last attempt
+        );
     }
 }
