@@ -1,7 +1,6 @@
 package com.software.security.zeroday.service;
 
 import com.software.security.zeroday.dto.user.*;
-import com.software.security.zeroday.entity.File;
 import com.software.security.zeroday.entity.User;
 import com.software.security.zeroday.entity.Validation;
 import com.software.security.zeroday.entity.enumeration.Gender;

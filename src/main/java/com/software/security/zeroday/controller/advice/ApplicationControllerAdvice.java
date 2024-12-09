@@ -52,7 +52,7 @@ public class ApplicationControllerAdvice {
         String message = e.getBindingResult().getAllErrors().stream()
             .map(DefaultMessageSourceResolvable::getDefaultMessage)
             .toList()
-            .stream().findFirst()
+            .stream().findAny()
             .orElse(e.getMessage());
 
         return ErrorEntity.builder()
@@ -67,7 +67,7 @@ public class ApplicationControllerAdvice {
         log.warn(String.valueOf(e));
         return ErrorEntity.builder()
             .status(HttpStatus.BAD_REQUEST.value())
-            .message("Invalid email or password")
+            .message(e.getMessage())
             .build();
     }
 
@@ -83,10 +83,20 @@ public class ApplicationControllerAdvice {
 
     @ResponseStatus(value = HttpStatus.CONFLICT)
     @ExceptionHandler({AlreadyProcessedException.class})
-    public @ResponseBody ErrorEntity handleAlreadyProcessedException(RuntimeException e) {
+    public @ResponseBody ErrorEntity handleAlreadyProcessedException(AlreadyProcessedException e) {
         log.warn(String.valueOf(e));
         return ErrorEntity.builder()
             .status(HttpStatus.CONFLICT.value())
+            .message(e.getMessage())
+            .build();
+    }
+
+    @ResponseStatus(value = HttpStatus.TOO_MANY_REQUESTS)
+    @ExceptionHandler({ToManyAttemptsException.class})
+    public @ResponseBody ErrorEntity handleToManyAttemptsException(ToManyAttemptsException e) {
+        log.warn(String.valueOf(e));
+        return ErrorEntity.builder()
+            .status(HttpStatus.TOO_MANY_REQUESTS.value())
             .message(e.getMessage())
             .build();
     }
@@ -100,7 +110,6 @@ public class ApplicationControllerAdvice {
             .message(e.getMessage())
             .build();
     }
-
 
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     @ExceptionHandler({

@@ -7,6 +7,7 @@ import com.software.security.zeroday.entity.User;
 import com.software.security.zeroday.entity.enumeration.FileExtension;
 import com.software.security.zeroday.entity.enumeration.FileType;
 import com.software.security.zeroday.repository.FileRepository;
+import com.software.security.zeroday.security.util.SanitizationUtil;
 import com.software.security.zeroday.service.exception.ConstraintException;
 import com.software.security.zeroday.service.exception.InvalidFileException;
 import jakarta.transaction.Transactional;
@@ -32,6 +33,8 @@ import java.util.stream.Stream;
 @Service
 public class FileService {
     private final FileRepository fileRepository;
+    private final SanitizationUtil sanitizationUtil;
+
     private final Path rootLocation = Paths.get("src/main/resources/static");
 
     public FileDTO uploadFile(MultipartFile file) {
@@ -51,6 +54,9 @@ public class FileService {
     }
 
     private FileDTO saveFile(MultipartFile file, FileExtension[] allowedFileExtensions) {
+        if (file == null || file.isEmpty())
+            throw new InvalidFileException("File is empty or missing");
+
         String contentType = file.getContentType();
         String originalFilename = file.getOriginalFilename();
 
@@ -72,7 +78,12 @@ public class FileService {
 
         this.validateFileSize(file.getSize(), tempFile.getType());
 
-        this.saveFile(file, uniqueFileName, fileExtension);
+        if (FileExtension.SVG.getMimeType().equalsIgnoreCase(contentType)) {
+            String content = this.sanitizationUtil.sanitizeSvg(file);
+            this.saveSanitizedSvg(content, uniqueFileName, fileExtension);
+        } else {
+            this.saveFile(file, uniqueFileName, fileExtension);
+        }
 
         tempFile = this.fileRepository.save(tempFile);
 
@@ -222,6 +233,20 @@ public class FileService {
 
         try {
             Files.copy(file.getInputStream(), destinationFile);
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to store temporary file", e);
+        }
+    }
+
+    private void saveSanitizedSvg(String sanitizedContent, String uniqueFileName, String fileExtension) {
+        Path destinationFile = this.rootLocation
+            .resolve(FileType.TEMP.getFolder())
+            .resolve(uniqueFileName + "." + fileExtension)
+            .normalize()
+            .toAbsolutePath();
+
+        try {
+            Files.writeString(destinationFile, sanitizedContent);
         } catch (IOException e) {
             throw new RuntimeException("Failed to store temporary file", e);
         }

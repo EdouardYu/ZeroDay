@@ -34,7 +34,7 @@ public class PostService {
     private String CONTEXT_PATH;
 
     public PostDTO createPost(PostCreationDTO postDTO) {
-        String sanitizedContent = this.sanitizationUtil.sanitize(postDTO.getContent());
+        String sanitizedContent = this.sanitizationUtil.sanitizeString(postDTO.getContent());
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
         Post parent = null;
@@ -74,9 +74,10 @@ public class PostService {
     public PostDTO updatePost(Long id, PostModificationDTO postDTO) {
         Post post = this.findById(id);
 
+        String sanitizedContent = this.sanitizationUtil.sanitizeString(postDTO.getContent());
         this.authorizationUtil.verifyAuthorization(post.getUser().getId());
 
-        post.setContent(postDTO.getContent());
+        post.setContent(sanitizedContent);
         post.setUpdatedAt(Instant.now());
         post = this.postRepository.save(post);
 

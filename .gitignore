@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+/ressources/static/images/
+/ressources/static/videos/
+/ressources/static/temp/

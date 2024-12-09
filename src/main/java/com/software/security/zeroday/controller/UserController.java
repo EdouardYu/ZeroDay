@@ -2,12 +2,16 @@ package com.software.security.zeroday.controller;
 
 import com.software.security.zeroday.dto.user.*;
 import com.software.security.zeroday.security.JwtService;
+import com.software.security.zeroday.service.LoginAttemptService;
 import com.software.security.zeroday.service.UserService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,6 +21,7 @@ public class UserController {
     private final UserService userService;
     private final AuthenticationManager authenticationManager;
     private final JwtService jwtService;
+    private final LoginAttemptService loginAttemptService;
 
     @ResponseStatus(value = HttpStatus.CREATED)
     @PostMapping(path = "signup", consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -42,13 +47,29 @@ public class UserController {
         consumes = MediaType.APPLICATION_JSON_VALUE,
         produces = MediaType.APPLICATION_JSON_VALUE
     )
-    public TokenDTO signIn(@RequestBody AuthenticationDTO authenticationDTO) {
-        this.authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-            authenticationDTO.getEmail(),
-            authenticationDTO.getPassword()
-        ));
+    public TokenDTO signIn(
+        @RequestBody AuthenticationDTO authenticationDTO,
+        HttpServletRequest request,
+        HttpServletResponse response
+    ) {
+        String deviceId = this.loginAttemptService.getDeviceIdentifier(request, response);
+        this.loginAttemptService.validateLoginAttempt(authenticationDTO.getEmail(), deviceId);
 
-        return this.jwtService.generate(authenticationDTO.getEmail());
+        try {
+            this.authenticationManager.authenticate(
+                new UsernamePasswordAuthenticationToken(
+                    authenticationDTO.getEmail(),
+                    authenticationDTO.getPassword()
+                )
+            );
+
+            this.loginAttemptService.resetAttempts(authenticationDTO.getEmail(), deviceId);
+            return jwtService.generate(authenticationDTO.getEmail());
+
+        } catch (BadCredentialsException e) {
+            int remainingAttempts = this.loginAttemptService.recordFailedAttempt(authenticationDTO.getEmail(), deviceId);
+            throw new BadCredentialsException("Invalid email or password. Remaining attempts: " + remainingAttempts);
+        }
     }
 
     @ResponseStatus(value = HttpStatus.OK)

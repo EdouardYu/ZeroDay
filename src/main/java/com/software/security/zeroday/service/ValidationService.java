@@ -24,7 +24,7 @@ public class ValidationService {
     private final ValidationRepository validationRepository;
     private final NotificationService notificationService;
     private final int VALIDITY_DURATION = 10;
-    private final String CHRONO_UNIT = "minutes";
+    private final ChronoUnit CHRONO_UNIT = ChronoUnit.MINUTES;
 
     private final Map<Long, Object> userLocks = new ConcurrentHashMap<>();
 
@@ -33,7 +33,7 @@ public class ValidationService {
             try {
                 this.validationRepository.disableValidationCodesByUser(user.getId());
                 Validation validation = this.generateValidationCode(user);
-                this.notificationService.sendActivationCodeEmail(validation, this.VALIDITY_DURATION, this.CHRONO_UNIT);
+                this.notificationService.sendActivationCodeEmail(validation, this.VALIDITY_DURATION, this.CHRONO_UNIT.name().toLowerCase());
             } finally {
                 this.userLocks.remove(user.getId());
             }
@@ -45,7 +45,7 @@ public class ValidationService {
             try {
                 this.validationRepository.disableValidationCodesByUser(user.getId());
                 Validation validation = this.generateValidationCode(user);
-                this.notificationService.sendPasswordResetEmail(validation, this.VALIDITY_DURATION, this.CHRONO_UNIT);
+                this.notificationService.sendPasswordResetEmail(validation, this.VALIDITY_DURATION, this.CHRONO_UNIT.name().toLowerCase());
             } finally {
                 this.userLocks.remove(user.getId());
             }
@@ -63,7 +63,7 @@ public class ValidationService {
 
         Validation validation = Validation.builder()
             .code(code)
-            .expiredAt(Instant.now().plus(this.VALIDITY_DURATION, ChronoUnit.valueOf(this.CHRONO_UNIT.toUpperCase())))
+            .expiredAt(Instant.now().plus(this.VALIDITY_DURATION, this.CHRONO_UNIT))
             .enabled(true)
             .user(user)
             .build();
