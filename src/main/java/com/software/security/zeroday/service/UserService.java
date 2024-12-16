@@ -207,7 +207,7 @@ public class UserService implements UserDetailsService {
             .birthday(user.getBirthday())
             .gender(user.getGender())
             .nationality(user.getNationality())
-            .pictureUrl(CONTEXT_PATH + "/images/" + fileName)
+            .pictureUrl(CONTEXT_PATH + "/file/images/" + fileName)
             .bio(user.getBio())
             .role(user.getRole())
             .build();

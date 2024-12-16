@@ -34,7 +34,6 @@ public class ApplicationControllerAdvice {
         LockedException.class,
         BadPasswordException.class,
         BadCredentialsException.class,
-        PostNotFoundException.class,
         InvalidFileException.class,
         ConstraintException.class,
         MultipartException.class
@@ -70,6 +69,19 @@ public class ApplicationControllerAdvice {
         return ErrorEntity.builder()
             .status(HttpStatus.BAD_REQUEST.value())
             .message("Invalid request format: " + e.getMessage())
+            .build();
+    }
+
+    @ResponseStatus(value = HttpStatus.NOT_FOUND)
+    @ExceptionHandler({
+        PostNotFoundException.class,
+        FileNotFoundException.class
+    })
+    public @ResponseBody ErrorEntity handleNotFoundException(RuntimeException e) {
+        log.warn(String.valueOf(e));
+        return ErrorEntity.builder()
+            .status(HttpStatus.NOT_FOUND.value())
+            .message(e.getMessage())
             .build();
     }
 

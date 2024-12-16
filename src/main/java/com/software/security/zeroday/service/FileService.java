@@ -1,6 +1,7 @@
 package com.software.security.zeroday.service;
 
 import com.software.security.zeroday.dto.file.FileDTO;
+import com.software.security.zeroday.dto.file.FileIdDTO;
 import com.software.security.zeroday.entity.File;
 import com.software.security.zeroday.entity.Post;
 import com.software.security.zeroday.entity.User;
@@ -9,10 +10,12 @@ import com.software.security.zeroday.entity.enumeration.FileType;
 import com.software.security.zeroday.repository.FileRepository;
 import com.software.security.zeroday.security.util.SanitizationUtil;
 import com.software.security.zeroday.service.exception.ConstraintException;
+import com.software.security.zeroday.service.exception.FileNotFoundException;
 import com.software.security.zeroday.service.exception.InvalidFileException;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MaxUploadSizeExceededException;
@@ -37,11 +40,11 @@ public class FileService {
 
     private final Path rootLocation = Paths.get("src/main/resources/static");
 
-    public FileDTO uploadFile(MultipartFile file) {
+    public FileIdDTO uploadFile(MultipartFile file) {
         return saveFile(file, FileExtension.values());
     }
 
-    public FileDTO uploadProfilePicture(MultipartFile file) {
+    public FileIdDTO uploadProfilePicture(MultipartFile file) {
         return saveFile(file, new FileExtension[]{
             FileExtension.JPEG,
             FileExtension.JPG,
@@ -53,7 +56,7 @@ public class FileService {
         });
     }
 
-    private FileDTO saveFile(MultipartFile file, FileExtension[] allowedFileExtensions) {
+    private FileIdDTO saveFile(MultipartFile file, FileExtension[] allowedFileExtensions) {
         if (file == null || file.isEmpty())
             throw new InvalidFileException("File is empty or missing");
 
@@ -87,7 +90,7 @@ public class FileService {
 
         tempFile = this.fileRepository.save(tempFile);
 
-        return FileDTO.builder().id(tempFile.getId()).build();
+        return FileIdDTO.builder().id(tempFile.getId()).build();
 
     }
 
@@ -177,7 +180,7 @@ public class FileService {
     public String getProfilePicture(Long userId) {
         return this.fileRepository.findByUser(userId)
             .filter(file -> file.getType() == FileType.IMAGE)
-            .map(file -> file.getName() + "." + file.getExtension().name().toLowerCase())
+            .map(this::getFileName)
             .orElse("user.png");
     }
 
@@ -214,7 +217,7 @@ public class FileService {
                 this.fileRepository.delete(file);
                 this.deleteFile(file);
 
-                String fileName = file.getName() + "." + file.getExtension().name().toLowerCase();
+                String fileName = this.getFileName(file);
                 log.info("Deleted unprocessed file: {} from storage and database", fileName);
             } catch (RuntimeException e) {
                 log.error("Unprocessed file deletion error", e);
@@ -238,6 +241,41 @@ public class FileService {
         }
     }
 
+    public FileDTO getFile(String folder, String fileName) {
+        folder = this.cleanPathVariable(folder);
+        fileName = this.cleanPathVariable(fileName);
+
+        Path filePath = this.rootLocation
+            .resolve(folder)
+            .resolve(fileName)
+            .normalize()
+            .toAbsolutePath();
+
+        if (!Files.isReadable(filePath))
+            throw new FileNotFoundException("File not found or not readable");
+
+        try {
+            String detectedMimeType = Files.probeContentType(filePath);
+            MediaType mimeType = detectedMimeType != null
+                ? MediaType.parseMediaType(detectedMimeType)
+                : MediaType.APPLICATION_OCTET_STREAM;
+
+            byte[] content = Files.readAllBytes(filePath);
+
+            return FileDTO.builder()
+                .mimeType(mimeType)
+                .content(content)
+                .build();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to read file from storage", e);
+        }
+    }
+
+    public String cleanPathVariable(String rawPathVariable) {
+        if (rawPathVariable == null || rawPathVariable.isEmpty()) return "";
+        return rawPathVariable.replaceAll("[\"'<>\\[\\]]", "").trim();
+    }
+
     private void saveSanitizedSvg(String sanitizedContent, String uniqueFileName, String fileExtension) {
         Path destinationFile = this.rootLocation
             .resolve(FileType.TEMP.getFolder())
@@ -253,7 +291,7 @@ public class FileService {
     }
 
     private void moveFile(File file) {
-        String fileName = file.getName() + "." + file.getExtension().name().toLowerCase();
+        String fileName = this.getFileName(file);
 
         Path tempFilePath = this.rootLocation
             .resolve(FileType.TEMP.getFolder())
@@ -276,7 +314,7 @@ public class FileService {
 
     private void deleteFile(File file) {
         String folder = file.isProcessed() ?  file.getType().getFolder() : FileType.TEMP.getFolder();
-        String fileName = file.getName() + "." + file.getExtension().name().toLowerCase();
+        String fileName = this.getFileName(file);
 
         Path filePath = this.rootLocation
             .resolve(folder)
@@ -289,5 +327,9 @@ public class FileService {
         } catch (IOException e) {
             throw new RuntimeException("Failed to delete file: " + fileName, e);
         }
+    }
+
+    private String getFileName(File file) {
+        return file.getName() + "." + file.getExtension().name().toLowerCase();
     }
 }

@@ -129,7 +129,7 @@ public class PostService {
 
         UserDTO userDTO = UserDTO.builder()
             .username(user.getUsername())
-            .pictureUrl(this.CONTEXT_PATH + "/" + FileType.IMAGE.getFolder() + "/" + userPicture)
+            .pictureUrl(this.CONTEXT_PATH + "/file/" + FileType.IMAGE.getFolder() + "/" + userPicture)
             .role(user.getRole())
             .build();
 
@@ -139,13 +139,13 @@ public class PostService {
 
             UserDTO parentUser = UserDTO.builder()
                 .username(parent.getUser().getUsername())
-                .pictureUrl(this.CONTEXT_PATH + "/" + FileType.IMAGE.getFolder() + "/" + parentUserPicture)
+                .pictureUrl(this.CONTEXT_PATH + "/file/" + FileType.IMAGE.getFolder() + "/" + parentUserPicture)
                 .role(parent.getUser().getRole())
                 .build();
 
             String parentFileUrl = null;
             if (parent.getFile() != null) {
-                parentFileUrl = this.CONTEXT_PATH + "/" +
+                parentFileUrl = this.CONTEXT_PATH + "/file/" +
                     parent.getFile().getType().getFolder() + "/" +
                     parent.getFile().getName() + "." +
                     parent.getFile().getExtension().name().toLowerCase();
@@ -160,7 +160,7 @@ public class PostService {
 
         String fileUrl = null;
         if (file != null) {
-            fileUrl = this.CONTEXT_PATH + "/" +
+            fileUrl = this.CONTEXT_PATH + "/file/" +
                 file.getType().getFolder() + "/" +
                 file.getName() + "." +
                 file.getExtension().name().toLowerCase();

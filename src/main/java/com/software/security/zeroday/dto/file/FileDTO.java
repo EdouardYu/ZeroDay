@@ -2,9 +2,11 @@ package com.software.security.zeroday.dto.file;
 
 import lombok.Builder;
 import lombok.Data;
+import org.springframework.http.MediaType;
 
 @Data
 @Builder
 public class FileDTO {
-    Long id;
+    private MediaType mimeType;
+    private byte[] content;
 }
