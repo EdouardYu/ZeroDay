@@ -99,7 +99,6 @@ public class PostService {
     }
 
     public void createWelcomePost(User user, Instant instant) {
-
         Post post = Post.builder()
             .content(user.getUsername() + " has joined ZeroDay network!")
             .createdAt(instant)
