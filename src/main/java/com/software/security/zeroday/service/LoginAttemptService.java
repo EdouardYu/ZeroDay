@@ -18,7 +18,7 @@ import java.util.UUID;
 import java.util.stream.Stream;
 
 @Slf4j
-@Transactional
+@Transactional(dontRollbackOn = ToManyAttemptsException.class)
 @AllArgsConstructor
 @Service
 public class LoginAttemptService {
