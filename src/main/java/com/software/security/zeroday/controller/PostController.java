@@ -1,5 +1,6 @@
 package com.software.security.zeroday.controller;
 
+import com.software.security.zeroday.dto.post.LinkPreviewDTO;
 import com.software.security.zeroday.dto.post.PostDTO;
 import com.software.security.zeroday.dto.post.PostCreationDTO;
 import com.software.security.zeroday.dto.post.PostModificationDTO;
@@ -46,5 +47,11 @@ public class PostController {
     @DeleteMapping("{id}")
     public void deletePost(@PathVariable Long id) {
         this.postService.deletePost(id);
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(path = "link/preview", produces = MediaType.APPLICATION_JSON_VALUE)
+    public LinkPreviewDTO getLinkPreview(@RequestParam String url) {
+        return this.postService.getLinkPreview(url);
     }
 }

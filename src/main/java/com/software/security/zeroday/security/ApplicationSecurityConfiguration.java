@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authorization.AuthorizationDecision;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +17,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 @EnableMethodSecurity
 @AllArgsConstructor
@@ -30,6 +34,12 @@ public class ApplicationSecurityConfiguration {
         return httpSecurity
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorize -> authorize
+                .requestMatchers("/admin/logs", "/actuator/**").access((auth, context) -> {
+                    String remoteAddr = context.getRequest().getRemoteAddr();
+                    boolean isLocal = remoteAddr.equals(getLocalIpAddress()) || remoteAddr.equals("127.0.0.1");
+                    System.out.println(remoteAddr);
+                    return new AuthorizationDecision(isLocal);
+                })
                 .requestMatchers(HttpMethod.POST, "/signup").permitAll()
                 .requestMatchers(HttpMethod.POST, "/activate").permitAll()
                 .requestMatchers(HttpMethod.POST, "/activate/new").permitAll()
@@ -66,6 +76,14 @@ public class ApplicationSecurityConfiguration {
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             ).addFilterBefore(this.jwtFilter, UsernamePasswordAuthenticationFilter.class)
             .build();
+    }
+
+    private String getLocalIpAddress() {
+        try {
+            return InetAddress.getLocalHost().getHostAddress();
+        } catch (UnknownHostException e) {
+            throw new RuntimeException("Unable to determine local IP address", e);
+        }
     }
 
     @Bean

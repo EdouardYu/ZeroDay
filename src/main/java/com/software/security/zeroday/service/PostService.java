@@ -12,6 +12,8 @@ import com.software.security.zeroday.security.util.AuthorizationUtil;
 import com.software.security.zeroday.security.util.SanitizationUtil;
 import com.software.security.zeroday.service.exception.PostNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -19,6 +21,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.time.Instant;
 
 @Transactional
@@ -182,5 +185,18 @@ public class PostService {
     private Post findById(Long id) {
         return this.postRepository.findById(id)
             .orElseThrow(() -> new PostNotFoundException("Post not found"));
+    }
+
+    public LinkPreviewDTO getLinkPreview(String url) {
+        try {
+            Document document = Jsoup.connect(url).get();
+
+            return LinkPreviewDTO.builder()
+                .title(document.title())
+                .content(document.body().html())
+                .build();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to fetch URL", e);
+        }
     }
 }
