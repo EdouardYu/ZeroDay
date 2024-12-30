@@ -3,8 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <title>ZeroDay Admin Logs</title>
+    <link href="/css/admin-logs.css" rel="stylesheet" />
 </head>
 <body>
-    <h1>Hello</h1>
+    <h1>User Action Logs</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Log Entry</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="log : ${logs}">
+                <td th:text="${log}"></td>
+            </tr>
+        </tbody>
+    </table>
 </body>
 </html>

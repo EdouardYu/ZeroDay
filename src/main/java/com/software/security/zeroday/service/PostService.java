@@ -7,6 +7,7 @@ import com.software.security.zeroday.entity.File;
 import com.software.security.zeroday.entity.Post;
 import com.software.security.zeroday.entity.User;
 import com.software.security.zeroday.entity.enumeration.FileType;
+import com.software.security.zeroday.entity.enumeration.LogAction;
 import com.software.security.zeroday.repository.PostRepository;
 import com.software.security.zeroday.security.util.AuthorizationUtil;
 import com.software.security.zeroday.security.util.SanitizationUtil;
@@ -32,6 +33,7 @@ public class PostService {
     private final FileService fileService;
     private final AuthorizationUtil authorizationUtil;
     private final SanitizationUtil sanitizationUtil;
+    private final UserActionLogger userActionLogger;
 
     @Value("${server.servlet.context-path}")
     private String CONTEXT_PATH;
@@ -60,6 +62,8 @@ public class PostService {
         if (postDTO.getFileId() != null)
             file = this.fileService.finalizeFileUpload(postDTO.getFileId(), post);
 
+        this.userActionLogger.log(LogAction.CREATE_POST, user.getUsername());
+
         return toPostDTO(post, file, user, parent);
     }
 
@@ -78,7 +82,7 @@ public class PostService {
         Post post = this.findById(id);
 
         String sanitizedContent = this.sanitizationUtil.sanitizeString(postDTO.getContent());
-        this.authorizationUtil.verifyAuthorization(post.getUser().getId());
+        User user = this.authorizationUtil.verifyAuthorization(post.getUser().getId());
 
         post.setContent(sanitizedContent);
         post.setUpdatedAt(Instant.now());
@@ -88,17 +92,21 @@ public class PostService {
         if (postDTO.getFileId() != null)
             file = this.fileService.finalizeFileUpload(postDTO.getFileId(), post);
 
+        this.userActionLogger.log(LogAction.UPDATE_POST, user.getUsername());
+
         return toPostDTO(post, file, post.getUser(), post.getParent());
     }
 
     public void deletePost(Long id) {
         Post post = this.findById(id);
 
-        this.authorizationUtil.verifyAuthorization(post.getUser().getId());
+        User user = this.authorizationUtil.verifyAuthorization(post.getUser().getId());
 
         this.fileService.removePostFileAndAllDescendantsFiles(post);
 
         this.postRepository.delete(post);
+
+        this.userActionLogger.log(LogAction.DELETE_POST, user.getUsername());
     }
 
     public void createWelcomePost(User user, Instant instant) {

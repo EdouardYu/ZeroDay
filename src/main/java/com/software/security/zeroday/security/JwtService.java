@@ -3,7 +3,9 @@ package com.software.security.zeroday.security;
 import com.software.security.zeroday.dto.user.TokenDTO;
 import com.software.security.zeroday.entity.Jwt;
 import com.software.security.zeroday.entity.User;
+import com.software.security.zeroday.entity.enumeration.LogAction;
 import com.software.security.zeroday.repository.JwtRepository;
+import com.software.security.zeroday.service.UserActionLogger;
 import com.software.security.zeroday.service.UserService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -32,6 +34,7 @@ import java.util.function.Function;
 public class JwtService {
     private final UserService userService;
     private final JwtRepository jwtRepository;
+    private final UserActionLogger userActionLogger;
 
     @Value("${encryption.key}")
     private String ENCRYPTION_KEY;
@@ -57,6 +60,8 @@ public class JwtService {
                     .build();
 
                 this.jwtRepository.save(jwt);
+
+                this.userActionLogger.log(LogAction.SIGN_IN, user.getUsername());
 
                 return TokenDTO.builder()
                     .bearer(bearer)
@@ -125,6 +130,8 @@ public class JwtService {
 
         jwt.setEnabled(false);
         this.jwtRepository.save(jwt);
+
+        this.userActionLogger.log(LogAction.SIGN_OUT, user.getUsername());
     }
 
     @Scheduled(cron = "@daily")
