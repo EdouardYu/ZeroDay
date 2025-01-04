@@ -1,4 +1,10 @@
 <configuration>
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
     <appender name="USER_LOGS_FILE" class="ch.qos.logback.core.FileAppender">
         <file>logs/user-logs.log</file>
         <append>true</append>
@@ -10,4 +16,8 @@
     <logger name="USER_LOGS" level="INFO" additivity="false">
         <appender-ref ref="USER_LOGS_FILE" />
     </logger>
+
+    <root level="INFO">
+        <appender-ref ref="CONSOLE" />
+    </root>
 </configuration>
