@@ -1,13 +1,16 @@
-<configuration>
-    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
-        <encoder>
-            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
-        </encoder>
-    </appender>
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration>
 
-    <appender name="USER_LOGS_FILE" class="ch.qos.logback.core.FileAppender">
+<configuration scan="true">
+    <include resource="org/springframework/boot/logging/logback/base.xml"/>
+
+    <appender name="USER_LOGS_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>logs/user-logs.log</file>
         <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/user-logs-%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+        </rollingPolicy>
         <encoder>
             <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
         </encoder>
@@ -16,8 +19,4 @@
     <logger name="USER_LOGS" level="INFO" additivity="false">
         <appender-ref ref="USER_LOGS_FILE" />
     </logger>
-
-    <root level="INFO">
-        <appender-ref ref="CONSOLE" />
-    </root>
 </configuration>
