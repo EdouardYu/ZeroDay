@@ -76,11 +76,13 @@ public class JwtService {
         return this.userLocks.computeIfAbsent(userId, key -> new Object());
     }
 
-    private String generateJwt(User user, long currentTime, long expirationTime) {
+    public String generateJwt(User user, long currentTime, long expirationTime) {
+        System.out.println(new Date(currentTime));
+        System.out.println(new Date(expirationTime));
         return Jwts.builder()
             .issuedAt(new Date(currentTime))
             .expiration(new Date(expirationTime))
-            .subject(String.valueOf(user.getId()))
+            .subject(user.getId().toString())
             .claim("role", user.getRole().name())
             .signWith(this.getKey())
             .compact();
