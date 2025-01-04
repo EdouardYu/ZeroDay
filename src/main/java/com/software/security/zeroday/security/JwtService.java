@@ -77,8 +77,6 @@ public class JwtService {
     }
 
     public String generateJwt(User user, long currentTime, long expirationTime) {
-        System.out.println(new Date(currentTime));
-        System.out.println(new Date(expirationTime));
         return Jwts.builder()
             .issuedAt(new Date(currentTime))
             .expiration(new Date(expirationTime))

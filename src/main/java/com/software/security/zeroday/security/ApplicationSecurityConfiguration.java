@@ -37,7 +37,7 @@ public class ApplicationSecurityConfiguration {
                 .requestMatchers("/admin/logs", "/actuator/**").access((auth, context) -> {
                     String remoteAddr = context.getRequest().getRemoteAddr();
                     boolean isLocal = remoteAddr.equals(getLocalIpAddress()) || remoteAddr.equals("127.0.0.1");
-                    return new AuthorizationDecision(true);
+                    return new AuthorizationDecision(isLocal);
                 })
                 .requestMatchers(HttpMethod.POST, "/signup").permitAll()
                 .requestMatchers(HttpMethod.POST, "/activate").permitAll()
