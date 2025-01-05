@@ -10,6 +10,7 @@ import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -123,6 +124,13 @@ public class UserController {
     @DeleteMapping(path = "profiles/{id}")
     public void deleteProfile(@PathVariable Long id) {
         this.userService.deleteProfile(id);
+    }
+
+    @PreAuthorize("hasRole('ADMINISTRATOR')")
+    @ResponseStatus(value = HttpStatus.OK)
+    @GetMapping(path = "admin/flag", produces = MediaType.APPLICATION_JSON_VALUE)
+    public FlagDTO getFlag() {
+        return FlagDTO.builder().flag("CTF{JWT_ADMIN_ACCESS_GRANTED}").build();
     }
 }
 
