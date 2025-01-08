@@ -6,7 +6,7 @@
 
 ## **Purpose**
 This project simulates real-world security issues to:
-1. Enable hands-on practice with vulnerabilities such as path traversal, SSRF, JWT Exploitation, and SPEL injection.
+1. Enable hands-on practice with vulnerabilities such as path traversal, SSRF, JWT exploitation, and SPEL injection.
 2. Teach secure software development techniques by addressing these vulnerabilities.
 
 ---
