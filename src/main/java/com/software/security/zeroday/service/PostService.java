@@ -8,23 +8,31 @@ import com.software.security.zeroday.entity.Post;
 import com.software.security.zeroday.entity.User;
 import com.software.security.zeroday.entity.enumeration.FileType;
 import com.software.security.zeroday.entity.enumeration.LogAction;
+import com.software.security.zeroday.entity.object.EvaluatedPostContent;
 import com.software.security.zeroday.repository.PostRepository;
 import com.software.security.zeroday.security.util.AuthorizationUtil;
 import com.software.security.zeroday.security.util.SanitizationUtil;
 import com.software.security.zeroday.service.exception.PostNotFoundException;
+import com.software.security.zeroday.service.exception.SpelInjectionDetectedException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.expression.ExpressionParser;
+import org.springframework.expression.spel.standard.SpelExpressionParser;
+import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.time.LocalDate;
 
+@Slf4j
 @Transactional
 @RequiredArgsConstructor
 @Service
@@ -41,6 +49,10 @@ public class PostService {
     public PostDTO createPost(PostCreationDTO postDTO) {
         String sanitizedContent = this.sanitizationUtil.sanitizeString(postDTO.getContent());
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        if (containsSpecialExpression(sanitizedContent)) {
+            throw new SpelInjectionDetectedException("CTF{SPEL_INJECTION_DETECTED}");
+        }
 
         Post parent = null;
         if (postDTO.getParentId() != null)
@@ -64,18 +76,50 @@ public class PostService {
 
         this.userActionLogger.log(LogAction.CREATE_POST, user.getUsername());
 
-        return toPostDTO(post, file, user, parent);
+        EvaluatedPostContent evaluatedPostContent = this.evaluatePostContent(post);
+
+        return toPostDTO(
+            post,
+            evaluatedPostContent.getContent(),
+            evaluatedPostContent.getParentContent(),
+            file,
+            user,
+            parent
+        );
+    }
+
+    private boolean containsSpecialExpression(String content) {
+        return content != null && content
+            .matches(".*\\.concat\\(T\\(.*?\\)\\.toString\\(\\)\\).*");
     }
 
     public Page<PostDTO> getAllPosts(Pageable pageable) {
         return this.postRepository.findAll(pageable)
-                .map(post -> toPostDTO(post, post.getFile(), post.getUser(), post.getParent()));
+                .map(post -> {
+                    EvaluatedPostContent evaluatedPostContent = this.evaluatePostContent(post);
+                    return toPostDTO(
+                        post,
+                        evaluatedPostContent.getContent(),
+                        evaluatedPostContent.getParentContent(),
+                        post.getFile(),
+                        post.getUser(),
+                        post.getParent()
+                    );
+                });
     }
 
     public PostDTO getPost(Long id) {
         Post post = this.findById(id);
+        EvaluatedPostContent evaluatedPostContent = this.evaluatePostContent(post);
 
-        return toPostDTO(post, post.getFile(), post.getUser(), post.getParent());
+        return toPostDTO(
+            post,
+            evaluatedPostContent.getContent(),
+            evaluatedPostContent.getParentContent(),
+            post.getFile(),
+            post.getUser(),
+            post.getParent()
+        );
     }
 
     public PostDTO updatePost(Long id, PostModificationDTO postDTO) {
@@ -94,7 +138,16 @@ public class PostService {
 
         this.userActionLogger.log(LogAction.UPDATE_POST, user.getUsername());
 
-        return toPostDTO(post, file, post.getUser(), post.getParent());
+        EvaluatedPostContent evaluatedPostContent = this.evaluatePostContent(post);
+
+        return toPostDTO(
+            post,
+            evaluatedPostContent.getContent(),
+            evaluatedPostContent.getParentContent(),
+            file,
+            post.getUser(),
+            post.getParent()
+        );
     }
 
     public void deletePost(Long id) {
@@ -131,10 +184,61 @@ public class PostService {
         this.postRepository.save(post);
 
         this.fileService.finalizeProfilePictureUpload(pictureId, user, post);
-
     }
 
-    private PostDTO toPostDTO(Post post, File file, User user, Post parent) {
+    public LinkPreviewDTO getLinkPreview(String url) {
+        try {
+            Document document = Jsoup.connect(url).get();
+
+            return LinkPreviewDTO.builder()
+                .title(document.title())
+                .content(document.body().html())
+                .build();
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to fetch URL", e);
+        }
+    }
+
+    private EvaluatedPostContent evaluatePostContent(Post post) {
+        User currentUser = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        ExpressionParser parser = new SpelExpressionParser();
+        StandardEvaluationContext context = new StandardEvaluationContext();
+        context.setVariable("current_date", LocalDate.now());
+        context.setVariable("username", currentUser.getUsername());
+        context.setVariable("reply_to", post.getParent() != null ? post.getParent().getUser().getUsername() : null);
+
+        String content = post.getContent();
+
+        if (content != null && content.contains("#{") && content.contains("}#"))
+            content = this.evaluateDynamicContent(parser, context, content);
+
+        //content = parser.parseExpression(content).getValue(context, Object.class).toString();
+
+        String parentContent = null;
+        if (post.getParent() != null && post.getParent().getContent() != null) {
+            parentContent = post.getParent().getContent();
+            if (parentContent.contains("#{") && parentContent.contains("}#"))
+                parentContent = this.evaluateDynamicContent(parser, context, parentContent);
+
+        }
+
+        return EvaluatedPostContent.builder()
+            .content(content)
+            .parentContent(parentContent)
+            .build();
+    }
+
+    private String evaluateDynamicContent(ExpressionParser parser, StandardEvaluationContext context, String content) {
+        try {
+            return parser.parseExpression("'" + content.replace("#{", "'+#").replace("}#", "+'") + "'").getValue(context, String.class);
+        } catch (Exception e) {
+            log.warn("Failed to evaluate content expression: {}, {}", content, e.getMessage());
+            return content;
+        }
+    }
+
+    private PostDTO toPostDTO(Post post, String content, String parentContent, File file, User user, Post parent) {
         String userPicture = this.fileService.getProfilePicture(user.getId());
 
         UserDTO userDTO = UserDTO.builder()
@@ -163,7 +267,7 @@ public class PostService {
 
             parentDTO = ParentDTO.builder()
                 .user(parentUser)
-                .content(parent.getContent())
+                .content(parentContent)
                 .fileUrl(parentFileUrl)
                 .build();
         }
@@ -183,7 +287,7 @@ public class PostService {
             .id(post.getId())
             .user(userDTO)
             .parent(parentDTO)
-            .content(post.getContent())
+            .content(content)
             .fileUrl(fileUrl)
             .lastAction(lastAction)
             .instant(post.getUpdatedAt())
@@ -193,18 +297,5 @@ public class PostService {
     private Post findById(Long id) {
         return this.postRepository.findById(id)
             .orElseThrow(() -> new PostNotFoundException("Post not found"));
-    }
-
-    public LinkPreviewDTO getLinkPreview(String url) {
-        try {
-            Document document = Jsoup.connect(url).get();
-
-            return LinkPreviewDTO.builder()
-                .title(document.title())
-                .content(document.body().html())
-                .build();
-        } catch (IOException e) {
-            throw new RuntimeException("Failed to fetch URL", e);
-        }
     }
 }

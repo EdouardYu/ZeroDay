@@ -149,6 +149,15 @@ public class ApplicationControllerAdvice {
             .build();
     }
 
+    @ResponseStatus(value = HttpStatus.IM_USED)
+    @ExceptionHandler({SpelInjectionDetectedException.class})
+    public @ResponseBody ErrorEntity handleSpelInjectionDetectedException(SpelInjectionDetectedException e) {
+        return ErrorEntity.builder()
+            .status(HttpStatus.IM_USED.value())
+            .message(e.getMessage())
+            .build();
+    }
+
     @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
     @ExceptionHandler({RuntimeException.class})
     public @ResponseBody ErrorEntity handleRuntimeException(RuntimeException e) {

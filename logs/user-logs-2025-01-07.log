@@ -1,0 +1,124 @@
+2025-01-07 00:00:00 [scheduling-1] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 00:06:22 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 00:08:20 [http-nio-8080-exec-5] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 00:09:21 [http-nio-8080-exec-8] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 00:12:30 [http-nio-8080-exec-10] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 02:43:38 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 02:43:45 [http-nio-8080-exec-2] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 02:44:02 [http-nio-8080-exec-7] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 02:47:12 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 02:48:58 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 02:50:43 [http-nio-8080-exec-3] INFO  USER_LOGS - User: EdouardY, Action: SIGN_IN
+2025-01-07 02:55:49 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 02:55:52 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 02:57:28 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 02:57:31 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 03:14:31 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 03:15:18 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 03:15:39 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 03:18:20 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 03:18:24 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 03:22:40 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 03:29:33 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 03:30:20 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 09:29:09 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 09:34:26 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 09:34:38 [http-nio-8080-exec-3] INFO  USER_LOGS - User: EdouardY, Action: SIGN_IN
+2025-01-07 09:37:46 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 09:38:35 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 09:39:49 [http-nio-8080-exec-10] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 09:41:49 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 12:22:22 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 12:26:17 [http-nio-8080-exec-10] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 13:41:03 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 13:41:34 [http-nio-8080-exec-5] INFO  USER_LOGS - User: EdouardY, Action: SIGN_IN
+2025-01-07 13:55:54 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 13:56:36 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 13:57:10 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 13:57:50 [http-nio-8080-exec-8] INFO  USER_LOGS - User: EdouardY, Action: SIGN_IN
+2025-01-07 13:58:59 [http-nio-8080-exec-5] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 13:59:31 [http-nio-8080-exec-6] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:00:50 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 14:00:55 [http-nio-8080-exec-6] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:02:37 [http-nio-8080-exec-9] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:03:57 [http-nio-8080-exec-3] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:07:02 [http-nio-8080-exec-5] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:09:30 [http-nio-8080-exec-1] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:14:21 [http-nio-8080-exec-4] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:21:48 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 14:21:58 [http-nio-8080-exec-7] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:29:24 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 14:29:37 [http-nio-8080-exec-4] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:29:45 [http-nio-8080-exec-5] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:30:32 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 14:30:40 [http-nio-8080-exec-3] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:31:47 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 14:31:50 [http-nio-8080-exec-2] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:32:59 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 14:33:19 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 14:33:31 [http-nio-8080-exec-2] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:34:35 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 14:34:52 [http-nio-8080-exec-4] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 14:38:10 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 14:38:17 [http-nio-8080-exec-6] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 22:27:02 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 22:27:14 [http-nio-8080-exec-2] INFO  USER_LOGS - User: EdouardY, Action: SIGN_IN
+2025-01-07 22:27:26 [http-nio-8080-exec-3] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 22:36:07 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 22:51:49 [http-nio-8080-exec-8] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 22:54:16 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 22:55:04 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 23:08:16 [http-nio-8080-exec-1] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:08:34 [http-nio-8080-exec-3] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:08:39 [http-nio-8080-exec-5] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:09:08 [http-nio-8080-exec-4] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:09:29 [http-nio-8080-exec-6] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:09:42 [http-nio-8080-exec-2] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:10:18 [restartedMain] INFO  USER_LOGS - User: Admin ZeroDay, Action: SIGN_IN
+2025-01-07 23:10:23 [http-nio-8080-exec-1] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:10:44 [http-nio-8080-exec-6] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:10:51 [http-nio-8080-exec-9] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:11:37 [http-nio-8080-exec-5] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:13:57 [http-nio-8080-exec-8] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:14:28 [http-nio-8080-exec-10] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:14:33 [http-nio-8080-exec-4] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:14:42 [http-nio-8080-exec-2] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:14:50 [http-nio-8080-exec-1] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:15:08 [http-nio-8080-exec-6] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:15:18 [http-nio-8080-exec-9] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:16:51 [http-nio-8080-exec-3] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:17:11 [http-nio-8080-exec-8] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:18:47 [http-nio-8080-exec-2] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:22:39 [http-nio-8080-exec-9] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:24:33 [http-nio-8080-exec-3] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:24:41 [http-nio-8080-exec-8] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:25:13 [http-nio-8080-exec-10] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:25:19 [http-nio-8080-exec-4] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:25:26 [http-nio-8080-exec-2] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:25:30 [http-nio-8080-exec-1] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:25:44 [http-nio-8080-exec-6] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:27:08 [http-nio-8080-exec-7] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:30:01 [http-nio-8080-exec-10] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:30:16 [http-nio-8080-exec-4] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:32:35 [http-nio-8080-exec-6] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:35:36 [http-nio-8080-exec-7] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:38:53 [http-nio-8080-exec-6] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:40:11 [http-nio-8080-exec-7] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:40:43 [http-nio-8080-exec-10] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:41:23 [http-nio-8080-exec-8] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:41:45 [http-nio-8080-exec-4] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:43:40 [http-nio-8080-exec-6] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:44:08 [http-nio-8080-exec-9] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:44:48 [http-nio-8080-exec-5] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:45:57 [http-nio-8080-exec-10] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:46:21 [http-nio-8080-exec-2] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:48:13 [http-nio-8080-exec-9] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:48:20 [http-nio-8080-exec-5] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:48:25 [http-nio-8080-exec-3] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:48:31 [http-nio-8080-exec-7] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:53:05 [http-nio-8080-exec-4] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:53:27 [http-nio-8080-exec-2] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:53:31 [http-nio-8080-exec-1] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:54:08 [http-nio-8080-exec-6] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:55:18 [http-nio-8080-exec-3] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
+2025-01-07 23:55:39 [http-nio-8080-exec-7] INFO  USER_LOGS - User: EdouardY, Action: CREATE_POST
