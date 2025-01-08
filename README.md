@@ -6,7 +6,7 @@
 
 ## **Purpose**
 This project simulates real-world security issues to:
-1. Enable hands-on practice with vulnerabilities such as path traversal, SSRF, JWT exploitation, and SPEL injection.
+1. Enable hands-on practice with vulnerabilities such as path traversal, SSRF, JWT exploitation, and SpEL injection.
 2. Teach secure software development techniques by addressing these vulnerabilities.
 
 ---
@@ -19,7 +19,10 @@ The frontend for this project is available in a separate repository:
 
 ## **CTF Challenges Implemented**
 
-- **CSRF**: Force unwanted actions on authenticated users.
-- **SSRF**: Exploit the server to access internal resources.
-- **JWT Exploitation**: Manipulate tokens for privilege escalation.
-- **File Upload**: Upload malicious scripts disguised as images.
+### 1. Path Traversal, SSRF, and JWT Forgery
+- **Path Traversal**: Exploit path traversal vulnerabilities to access sensitive configuration files.
+- **SSRF**: Exploit the server to access restricted internal resources.
+- **JWT Exploitation**: Manipulate JWT to escalate privileges.
+
+### 2. SpEL Injection Attack
+- **SpEL Injection**: Exploit  (SpEL) injection to execute arbitrary commands or retrieve system environment variables on the server.  
