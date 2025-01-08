@@ -25,4 +25,4 @@ The frontend for this project is available in a separate repository:
 - **JWT Exploitation**: Manipulate JWT to escalate privileges.
 
 ### 2. SpEL Injection Attack
-- **SpEL Injection**: Exploit  (SpEL) injection to execute arbitrary commands or retrieve system environment variables on the server.  
+- **SpEL Injection**: Exploit Spring Expression Language (SpEL) injection to execute arbitrary commands or retrieve system environment variables on the server.  
