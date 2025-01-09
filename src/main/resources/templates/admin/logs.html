@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <title>ZeroDay Admin Logs</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/x-icon" th:href="@{/images/zeroday.png}" />
+    <link rel="stylesheet" th:href="@{/css/logs.css}">
+</head>
+<body>
+    <h1>User Action Logs</h1>
+    <table>
+        <thead>
+            <tr>
+                <th>Log Entry</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr th:each="log : ${logs}">
+                <td th:text="${log}"></td>
+            </tr>
+        </tbody>
+    </table>
+</body>
+</html>

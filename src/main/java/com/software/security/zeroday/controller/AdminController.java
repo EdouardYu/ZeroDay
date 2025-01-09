@@ -23,6 +23,6 @@ public class AdminController {
         } catch (Exception e) {
             model.addAttribute("logs", List.of("Error reading log file: " + e.getMessage()));
         }
-        return "admin-logs";
+        return "admin/logs";
     }
 }
