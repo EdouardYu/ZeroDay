@@ -34,6 +34,7 @@ build/
 
 src/main/resources/static/images/*
 !src/main/resources/static/images/user.png
+!src/main/resources/static/images/zeroday.png
 src/main/resources/static/videos/*
 !src/main/resources/static/videos/.gitkeep
 src/main/resources/static/temp/*
