@@ -14,6 +14,7 @@ import com.software.security.zeroday.security.util.AuthorizationUtil;
 import com.software.security.zeroday.security.util.SanitizationUtil;
 import com.software.security.zeroday.service.exception.PostNotFoundException;
 import com.software.security.zeroday.service.exception.SpelInjectionDetectedException;
+import com.software.security.zeroday.service.exception.UrlNotReadableException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -195,7 +196,7 @@ public class PostService {
                 .content(document.body().html())
                 .build();
         } catch (IOException e) {
-            throw new RuntimeException("Failed to fetch URL", e);
+            throw new UrlNotReadableException("Failed to fetch URL: " + url + ", " + e.getMessage());
         }
     }
 

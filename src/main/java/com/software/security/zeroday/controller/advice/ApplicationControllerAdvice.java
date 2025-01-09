@@ -36,7 +36,8 @@ public class ApplicationControllerAdvice {
         BadCredentialsException.class,
         InvalidFileException.class,
         ConstraintException.class,
-        MultipartException.class
+        MultipartException.class,
+        UrlNotReadableException.class
     })
     public @ResponseBody ErrorEntity handleBadRequestException(RuntimeException e) {
         log.warn(String.valueOf(e));

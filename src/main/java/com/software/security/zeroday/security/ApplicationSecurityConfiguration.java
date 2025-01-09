@@ -34,11 +34,12 @@ public class ApplicationSecurityConfiguration {
         return httpSecurity
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(authorize -> authorize
-                .requestMatchers("/admin/logs", "/actuator/**").access((auth, context) -> {
+                .requestMatchers("/admin/logs").access((auth, context) -> {
                     String remoteAddr = context.getRequest().getRemoteAddr();
                     boolean isLocal = remoteAddr.equals(getLocalIpAddress()) || remoteAddr.equals("127.0.0.1");
                     return new AuthorizationDecision(isLocal);
                 })
+                .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/signup").permitAll()
                 .requestMatchers(HttpMethod.POST, "/activate").permitAll()
                 .requestMatchers(HttpMethod.POST, "/activate/new").permitAll()
