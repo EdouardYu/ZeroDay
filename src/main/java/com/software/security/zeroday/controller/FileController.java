@@ -2,6 +2,7 @@ package com.software.security.zeroday.controller;
 
 import com.software.security.zeroday.dto.file.FileDTO;
 import com.software.security.zeroday.dto.file.FileIdDTO;
+import com.software.security.zeroday.entity.enumeration.FileType;
 import com.software.security.zeroday.service.FileService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -35,6 +36,19 @@ public class FileController {
     @GetMapping(path = "{folder}/{filename}")
     public ResponseEntity<byte[]> getFile(@PathVariable String folder, @PathVariable("filename") String fileName){
         FileDTO file = this.fileService.getFile(folder, fileName);
+
+        return ResponseEntity.ok()
+            .contentType(file.getMimeType())
+            .header("Content-Disposition", "inline; filename*=UTF-8''"
+                + URLEncoder.encode(fileName, StandardCharsets.UTF_8).replace("+", "%20"))
+            .body(file.getContent());
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping(path = "profile/{id}")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable Long id){
+        String fileName = this.fileService.getProfilePicture(id);
+        FileDTO file = this.fileService.getFile(FileType.IMAGE.getFolder(), fileName);
 
         return ResponseEntity.ok()
             .contentType(file.getMimeType())

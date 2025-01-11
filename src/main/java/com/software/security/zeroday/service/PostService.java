@@ -19,7 +19,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.expression.ExpressionParser;
@@ -43,9 +42,6 @@ public class PostService {
     private final AuthorizationUtil authorizationUtil;
     private final SanitizationUtil sanitizationUtil;
     private final UserActionLogger userActionLogger;
-
-    @Value("${server.servlet.context-path}")
-    private String CONTEXT_PATH;
 
     public PostDTO createPost(PostCreationDTO postDTO) {
         String sanitizedContent = this.sanitizationUtil.sanitizeString(postDTO.getContent());
@@ -244,7 +240,7 @@ public class PostService {
 
         UserDTO userDTO = UserDTO.builder()
             .username(user.getUsername())
-            .pictureUrl(this.CONTEXT_PATH + "/file/" + FileType.IMAGE.getFolder() + "/" + userPicture)
+            .pictureUrl(FileType.IMAGE.getFolder() + "/" + userPicture)
             .role(user.getRole())
             .build();
 
@@ -254,14 +250,13 @@ public class PostService {
 
             UserDTO parentUser = UserDTO.builder()
                 .username(parent.getUser().getUsername())
-                .pictureUrl(this.CONTEXT_PATH + "/file/" + FileType.IMAGE.getFolder() + "/" + parentUserPicture)
+                .pictureUrl(FileType.IMAGE.getFolder() + "/" + parentUserPicture)
                 .role(parent.getUser().getRole())
                 .build();
 
             String parentFileUrl = null;
             if (parent.getFile() != null) {
-                parentFileUrl = this.CONTEXT_PATH + "/file/" +
-                    parent.getFile().getType().getFolder() + "/" +
+                parentFileUrl = parent.getFile().getType().getFolder() + "/" +
                     parent.getFile().getName() + "." +
                     parent.getFile().getExtension().name().toLowerCase();
             }
@@ -275,8 +270,7 @@ public class PostService {
 
         String fileUrl = null;
         if (file != null) {
-            fileUrl = this.CONTEXT_PATH + "/file/" +
-                file.getType().getFolder() + "/" +
+            fileUrl = file.getType().getFolder() + "/" +
                 file.getName() + "." +
                 file.getExtension().name().toLowerCase();
         }

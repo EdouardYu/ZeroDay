@@ -3,6 +3,7 @@ package com.software.security.zeroday.service;
 import com.software.security.zeroday.dto.user.*;
 import com.software.security.zeroday.entity.User;
 import com.software.security.zeroday.entity.Validation;
+import com.software.security.zeroday.entity.enumeration.FileType;
 import com.software.security.zeroday.entity.enumeration.Gender;
 import com.software.security.zeroday.entity.enumeration.Nationality;
 import com.software.security.zeroday.entity.enumeration.Role;
@@ -11,7 +12,6 @@ import com.software.security.zeroday.security.util.AuthorizationUtil;
 import com.software.security.zeroday.service.exception.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -34,9 +34,6 @@ public class UserService implements UserDetailsService {
     private final FileService fileService;
     private final AuthorizationUtil authorizationUtil;
 
-    @Value("${server.servlet.context-path}")
-    private String CONTEXT_PATH;
-
     public void signUp(RegistrationDTO userDTO) {
         Optional<User> dbUser = this.userRepository.findByEmail(userDTO.getEmail());
         String encryptedPassword = this.passwordEncoder.encode(userDTO.getPassword());
@@ -45,7 +42,7 @@ public class UserService implements UserDetailsService {
         User user;
         if(dbUser.isPresent()){
             user = dbUser.get();
-            if(user.isEnabled()) throw new AlreadyUsedException("User already enabled");
+            if(user.isEnabled()) throw new AlreadyUsedException("Email already used");
 
             user.setPassword(encryptedPassword);
             user.setFirstname(userDTO.getFirstname());
@@ -207,7 +204,7 @@ public class UserService implements UserDetailsService {
             .birthday(user.getBirthday())
             .gender(user.getGender())
             .nationality(user.getNationality())
-            .pictureUrl(CONTEXT_PATH + "/file/images/" + fileName)
+            .pictureUrl(FileType.IMAGE.getFolder() + "/" + fileName)
             .bio(user.getBio())
             .role(user.getRole())
             .build();
