@@ -153,6 +153,11 @@ public class UserService implements UserDetailsService {
 
     public ProfileDTO modifyProfile(Long id, ProfileModificationDTO userDTO) {
         User user = this.authorizationUtil.verifyAuthorization(id);
+
+        if (!user.getEmail().equals(userDTO.getEmail()) &&
+        this.userRepository.existsByEmailAndEnabled(userDTO.getEmail(), true))
+            throw new AlreadyUsedException("Email already used");
+
         Instant now = Instant.now();
 
         user.setEmail(userDTO.getEmail());

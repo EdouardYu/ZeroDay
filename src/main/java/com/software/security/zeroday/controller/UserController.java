@@ -4,6 +4,7 @@ import com.software.security.zeroday.dto.user.*;
 import com.software.security.zeroday.security.JwtService;
 import com.software.security.zeroday.service.LoginAttemptService;
 import com.software.security.zeroday.service.UserService;
+import com.software.security.zeroday.service.exception.AlreadyProcessedException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
