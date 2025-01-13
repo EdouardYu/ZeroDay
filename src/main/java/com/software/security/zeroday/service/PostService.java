@@ -19,8 +19,11 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -91,7 +94,13 @@ public class PostService {
     }
 
     public Page<PostDTO> getAllPosts(Pageable pageable) {
-        return this.postRepository.findAll(pageable)
+        Pageable sortedPageable = PageRequest.of(
+            pageable.getPageNumber(),
+            pageable.getPageSize(),
+            Sort.by(Sort.Direction.DESC, "id")
+        );
+
+        return this.postRepository.findAll(sortedPageable)
                 .map(post -> {
                     EvaluatedPostContent evaluatedPostContent = this.evaluatePostContent(post);
                     return toPostDTO(
@@ -187,13 +196,33 @@ public class PostService {
         try {
             Document document = Jsoup.connect(url).get();
 
+            String description = extractMetaTagContent(document, "description");
+            if (description == null) {
+                description = extractMetaTagContent(document, "og:description");
+            }
+            if (description == null) {
+                description = extractMetaTagContent(document, "twitter:description");
+            }
+
+            String imageUrl = extractMetaTagContent(document, "og:image");
+            if (imageUrl == null) {
+                imageUrl = extractMetaTagContent(document, "twitter:image");
+            }
+
             return LinkPreviewDTO.builder()
                 .title(document.title())
+                .description(description)
+                .image(imageUrl)
                 .content(document.body().html())
                 .build();
         } catch (IOException e) {
             throw new UrlNotReadableException("Failed to fetch URL: " + url + ", " + e.getMessage());
         }
+    }
+
+    private String extractMetaTagContent(Document document, String attributeName) {
+        Element metaTag = document.selectFirst("meta[name=" + attributeName + "], meta[property=" + attributeName + "]");
+        return metaTag != null ? metaTag.attr("content") : null;
     }
 
     private EvaluatedPostContent evaluatePostContent(Post post) {
@@ -209,8 +238,6 @@ public class PostService {
 
         if (content != null && content.contains("#{") && content.contains("}#"))
             content = this.evaluateDynamicContent(parser, context, content);
-
-        //content = parser.parseExpression(content).getValue(context, Object.class).toString();
 
         String parentContent = null;
         if (post.getParent() != null && post.getParent().getContent() != null) {
@@ -239,6 +266,7 @@ public class PostService {
         String userPicture = this.fileService.getProfilePicture(user.getId());
 
         UserDTO userDTO = UserDTO.builder()
+            .id(user.getId())
             .username(user.getUsername())
             .pictureUrl(FileType.IMAGE.getFolder() + "/" + userPicture)
             .role(user.getRole())
@@ -249,6 +277,7 @@ public class PostService {
             String parentUserPicture = this.fileService.getProfilePicture(user.getId());
 
             UserDTO parentUser = UserDTO.builder()
+                .id(parent.getUser().getId())
                 .username(parent.getUser().getUsername())
                 .pictureUrl(FileType.IMAGE.getFolder() + "/" + parentUserPicture)
                 .role(parent.getUser().getRole())

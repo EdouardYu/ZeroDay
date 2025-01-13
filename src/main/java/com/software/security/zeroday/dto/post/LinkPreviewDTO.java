@@ -7,6 +7,8 @@ import lombok.Data;
 @Builder
 public class LinkPreviewDTO {
     private String title;
+    private String description;
+    private String image;
     private String content;
 }
 
