@@ -42,7 +42,7 @@ public class ApplicationSecurityConfiguration {
                 .access((auth, context) -> {
                     String remoteAddr = context.getRequest().getRemoteAddr();
                     boolean isLocal = remoteAddr.equals(getLocalIpAddress()) || remoteAddr.equals("127.0.0.1");
-                    return new AuthorizationDecision(true);
+                    return new AuthorizationDecision(isLocal);
                 })
                 .requestMatchers(HttpMethod.GET, "/actuator/**").permitAll()
                 .requestMatchers(HttpMethod.POST, "/signup").permitAll()
