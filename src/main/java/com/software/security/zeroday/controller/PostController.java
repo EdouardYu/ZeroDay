@@ -19,10 +19,10 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     private final PostService postService;
 
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public PostDTO createPost(@Valid @RequestBody PostCreationDTO postDTO) {
-        return this.postService.createPost(postDTO);
+    public void createPost(@Valid @RequestBody PostCreationDTO postDTO) {
+        this.postService.createPost(postDTO);
     }
 
     @ResponseStatus(HttpStatus.OK)

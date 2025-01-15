@@ -46,17 +46,16 @@ public class PostService {
     private final SanitizationUtil sanitizationUtil;
     private final UserActionLogger userActionLogger;
 
-    public PostDTO createPost(PostCreationDTO postDTO) {
+    public void createPost(PostCreationDTO postDTO) {
         String sanitizedContent = this.sanitizationUtil.sanitizeString(postDTO.getContent());
         User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 
-        if (containsSpecialExpression(sanitizedContent)) {
-            throw new SpelInjectionDetectedException("CTF{SPEL_INJECTION_DETECTED}");
-        }
-
         Post parent = null;
         if (postDTO.getParentId() != null)
-            parent = this.findById(postDTO.getParentId());
+            parent = this.postRepository.findById(postDTO.getParentId())
+                .orElseThrow(() -> new PostNotFoundException("Parent not found"));
+
+        else postDTO.setContent(postDTO.getContent().replace("#{reply_to}#", ""));
 
         Instant now = Instant.now();
 
@@ -68,29 +67,22 @@ public class PostService {
             .parent(parent)
             .build();
 
+        if (containsSpecialExpression(sanitizedContent)) {
+            EvaluatedPostContent evaluatedPostContent = this.evaluatePostContent(post);
+            throw new SpelInjectionDetectedException("CTF{SPEL_INJECTION_DETECTED} content: " + evaluatedPostContent.getContent());
+        }
+
         post = this.postRepository.save(post);
 
-        File file = null;
         if (postDTO.getFileId() != null)
-            file = this.fileService.finalizeFileUpload(postDTO.getFileId(), post);
+            this.fileService.finalizeFileUpload(postDTO.getFileId(), post);
 
         this.userActionLogger.log(LogAction.CREATE_POST, user.getUsername());
-
-        EvaluatedPostContent evaluatedPostContent = this.evaluatePostContent(post);
-
-        return toPostDTO(
-            post,
-            evaluatedPostContent.getContent(),
-            evaluatedPostContent.getParentContent(),
-            file,
-            user,
-            parent
-        );
     }
 
     private boolean containsSpecialExpression(String content) {
         return content != null && content
-            .matches(".*\\.concat\\(T\\(.*?\\)\\.toString\\(\\)\\).*");
+            .matches(".*#\\{.*\\.concat\\(T\\(.*?\\)\\.toString\\(\\)\\).*}#.*");
     }
 
     public Page<PostDTO> getAllPosts(Pageable pageable) {
@@ -136,6 +128,12 @@ public class PostService {
 
         post.setContent(sanitizedContent);
         post.setUpdatedAt(Instant.now());
+
+        if (containsSpecialExpression(sanitizedContent)) {
+            EvaluatedPostContent evaluatedPostContent = this.evaluatePostContent(post);
+            throw new SpelInjectionDetectedException("CTF{SPEL_INJECTION_DETECTED} content: " + evaluatedPostContent.getContent());
+        }
+
         post = this.postRepository.save(post);
 
         File file = post.getFile();
