@@ -194,6 +194,10 @@ public class UserService implements UserDetailsService {
 
     public void deleteProfile(Long id) {
         User user = this.authorizationUtil.verifyAuthorization(id);
+
+        if (Role.ADMINISTRATOR.equals(user.getRole()))
+            throw new ForbiddenException("Cannot delete administrator account");
+
         this.fileService.deleteAllUserFiles(user);
         this.userRepository.delete(user);
     }
