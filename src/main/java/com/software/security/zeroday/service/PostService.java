@@ -120,7 +120,25 @@ public class PostService {
         );
     }
 
-    public PostDTO updatePost(Long id, PostModificationDTO postDTO) {
+    public RawPostDTO getRawPost(Long id) {
+        Post post = this.findById(id);
+
+        File file = post.getFile();
+        String fileUrl = null;
+        if (file != null) {
+            fileUrl = file.getType().getFolder() + "/" +
+                file.getName() + "." +
+                file.getExtension().name().toLowerCase();
+        }
+
+        return RawPostDTO.builder()
+            .content(post.getContent())
+            .fileUrl(fileUrl)
+            .build();
+    }
+
+
+    public void updatePost(Long id, PostModificationDTO postDTO) {
         Post post = this.findById(id);
 
         String sanitizedContent = this.sanitizationUtil.sanitizeString(postDTO.getContent());
@@ -136,22 +154,10 @@ public class PostService {
 
         post = this.postRepository.save(post);
 
-        File file = post.getFile();
         if (postDTO.getFileId() != null)
-            file = this.fileService.finalizeFileUpload(postDTO.getFileId(), post);
+            this.fileService.finalizeFileUpload(postDTO.getFileId(), post);
 
         this.userActionLogger.log(LogAction.UPDATE_POST, user.getUsername());
-
-        EvaluatedPostContent evaluatedPostContent = this.evaluatePostContent(post);
-
-        return toPostDTO(
-            post,
-            evaluatedPostContent.getContent(),
-            evaluatedPostContent.getParentContent(),
-            file,
-            post.getUser(),
-            post.getParent()
-        );
     }
 
     public void deletePost(Long id) {

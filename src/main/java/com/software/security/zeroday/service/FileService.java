@@ -175,6 +175,12 @@ public class FileService {
             throw new ConstraintException("The file is associated with a user profile picture, you cannot delete or modify the file");
 
         this.deleteFile(oldFile);
+
+        this.fileRepository.findById(oldFile.getId())
+            .ifPresent((file) -> {
+                file.setPost(null);
+                this.fileRepository.save(file);
+            });
     }
 
     public String getProfilePicture(Long userId) {

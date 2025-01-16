@@ -1,9 +1,6 @@
 package com.software.security.zeroday.controller;
 
-import com.software.security.zeroday.dto.post.LinkPreviewDTO;
-import com.software.security.zeroday.dto.post.PostDTO;
-import com.software.security.zeroday.dto.post.PostCreationDTO;
-import com.software.security.zeroday.dto.post.PostModificationDTO;
+import com.software.security.zeroday.dto.post.*;
 import com.software.security.zeroday.service.PostService;
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -38,9 +35,15 @@ public class PostController {
     }
 
     @ResponseStatus(HttpStatus.OK)
+    @GetMapping(path = "raw/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public RawPostDTO getRawPost(@PathVariable Long id) {
+        return this.postService.getRawPost(id);
+    }
+
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @PutMapping(path = "{id}", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
-    public PostDTO updatePost(@PathVariable Long id, @Valid @RequestBody PostModificationDTO postDTO) {
-        return this.postService.updatePost(id, postDTO);
+    public void updatePost(@PathVariable Long id, @Valid @RequestBody PostModificationDTO postDTO) {
+        this.postService.updatePost(id, postDTO);
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
